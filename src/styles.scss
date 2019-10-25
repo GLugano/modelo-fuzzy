@@ -1,1 +1,125 @@
-/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex {
+  flex-grow: 1;
+}
+
+.page-wrapper {
+  height: calc(100% - 64px);
+
+  .page {
+    min-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0;
+
+    .page-title {
+      font-size: 30px;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .page-content {
+      flex-grow: 1;
+    }
+  }
+}
+
+.mat-tab-group {
+  height: 100%;
+
+  .mat-tab-body-wrapper {
+    height: 100%;
+  }
+
+  .mat-tab-body {
+    .mat-tab-content {
+      padding: 18px;
+      box-sizing: border-box;
+    }
+  }
+}
+
+form {
+  > * {
+    margin: 18px;
+    display: block;
+  }
+
+  > label {
+    font-size: 20px;
+  }
+
+  div.field-line {
+    display: flex;
+    flex-direction: row;
+
+    > label {
+      margin: 18px 35px auto 35px;
+    }
+
+    > button {
+      margin: 6px 0 auto 19px;
+    }
+
+    > *:not(label) {
+      &:not(:first-of-type) {
+        margin-left: 10px;
+      }
+
+      &:not(:last-of-type) {
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .mat-form-field {
+    &.number {
+      width: 100px;
+    }
+  }
+}
+
+.mat-table {
+  width: 100%;
+
+  thead {
+    tr {
+      th {
+        min-width: 24px;
+        padding: 0 24px;
+
+        &.flex {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      td {
+        min-width: 24px;
+        padding: 0 24px;
+
+        &.flex {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
