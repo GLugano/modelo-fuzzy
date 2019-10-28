@@ -1,5 +1,5 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
-import { FormBuilder, Validators, NgForm, FormGroup } from '@angular/forms';
+import { Component, ViewChild } from '@angular/core';
+import { FormBuilder, NgForm, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material';
 
 @Component({
@@ -7,7 +7,7 @@ import { MatTableDataSource } from '@angular/material';
   templateUrl: './variaveis.component.html',
   styleUrls: ['./variaveis.component.scss']
 })
-export class VariaveisComponent implements OnInit {
+export class VariaveisComponent {
   @ViewChild('f', { static: true }) formValores: NgForm;
 
   formGroupVariavel = this.formBuilder.group({
@@ -16,28 +16,15 @@ export class VariaveisComponent implements OnInit {
   });
   formGroupValores = this.formBuilder.group({
     nome: [null, Validators.required],
-    baseIni: [0, Validators.required],
-    baseFim: [0, Validators.required],
-    nucleoIni: [0, Validators.required],
-    nucleoFim: [0, Validators.required]
+    baseIni: [null, Validators.required],
+    baseFim: [null, Validators.required],
+    nucleoIni: [null, Validators.required],
+    nucleoFim: [null, Validators.required]
   });
   displayedColumns: string[] = ['id', 'valor', 'base', 'nucleo', 'actions'];
   dataSource = new MatTableDataSource<any>();
 
   constructor(public formBuilder: FormBuilder) {}
-
-  ngOnInit() {
-    this.dataSource.data = [
-      {
-        id: 1,
-        nome: 'Baixo',
-        baseIni: 0,
-        baseFim: 15,
-        nucleoIni: 8,
-        nucleoFim: 10
-      }
-    ];
-  }
 
   addValue(): void {
     if (this.formGroupValores.invalid) {
