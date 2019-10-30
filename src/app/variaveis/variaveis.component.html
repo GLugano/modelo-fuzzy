@@ -31,19 +31,19 @@
                 <div class="field-line">
                   <label>Base</label>
                   <mat-form-field class="number">
-                    <input type="number" matInput placeholder="Início" formControlName="baseIni">
+                    <input type="number" matInput placeholder="Início" formControlName="baseIni" [min]="0">
                   </mat-form-field>
                   <mat-form-field class="number">
-                    <input type="number" matInput placeholder="Fim" formControlName="baseFim">
+                    <input type="number" matInput placeholder="Fim" formControlName="baseFim" [min]="0">
                   </mat-form-field>
                 </div>
                 <div class="field-line">
                   <label>Núcleo</label>
                   <mat-form-field class="number">
-                    <input type="number" matInput placeholder="Início" formControlName="nucleoIni">
+                    <input type="number" matInput placeholder="Início" formControlName="nucleoIni" [min]="0">
                   </mat-form-field>
                   <mat-form-field class="number">
-                    <input type="number" matInput placeholder="Fim" formControlName="nucleoFim">
+                    <input type="number" matInput placeholder="Fim" formControlName="nucleoFim" [min]="0">
                   </mat-form-field>
                   <button mat-icon-button (click)="addValue()">
                     <mat-icon>add</mat-icon>
