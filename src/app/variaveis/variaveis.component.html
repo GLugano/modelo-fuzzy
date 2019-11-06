@@ -1,9 +1,9 @@
 <div class="page-wrapper flex-container">
   <div class="flex"></div>
   <div class="page">
-    <div class="page-title">Variáveis</div>
+    <div class="page-title" (click)="selectedTab = 0">Variáveis</div>
     <div class="page-content">
-      <mat-tab-group>
+      <mat-tab-group [(selectedIndex)]="selectedTab">
         <mat-tab label="Lista">
           <!-- ABA LISTA -->
           <div>
