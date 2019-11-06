@@ -36,7 +36,11 @@
           <!-- ABA CADASTRO -->
           <div class="mat-tab-content">
             <form [formGroup]="formGroupVariavel">
-              <label>Variável</label>
+              <div class="flex-container">
+                <label>Variável</label>
+                <div class="flex"></div>
+                <button mat-stroked-button (click)="saveVariable()">Salvar</button>
+              </div>
               <div class="field-line">
                 <mat-form-field>
                   <mat-label>Tipo</mat-label>
@@ -50,7 +54,7 @@
                 </mat-form-field>
               </div>
             </form>
-            <form [formGroup]="formGroupValores" #f="ngForm">
+            <form [formGroup]="formGroupAtributos" #f="ngForm">
               <label>Valores</label>
               <div class="field-line">
                 <mat-form-field>

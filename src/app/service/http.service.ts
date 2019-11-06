@@ -13,8 +13,6 @@ export class HttpService {
     }
 
     let headers: HttpHeaders = new HttpHeaders();
-    headers = headers.append('Access-Control-Allow-Origin', '*');
-    headers = headers.append('Accept', 'application/json');
 
     const httpOptions = { headers };
 

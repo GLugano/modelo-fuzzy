@@ -1,21 +1,22 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, NgForm, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material';
 import { HttpService } from '../service/http.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-variaveis',
   templateUrl: './variaveis.component.html',
   styleUrls: ['./variaveis.component.scss']
 })
-export class VariaveisComponent {
+export class VariaveisComponent implements OnDestroy {
   @ViewChild('f', { static: true }) formValores: NgForm;
 
   formGroupVariavel = this.formBuilder.group({
     tipo: [1, Validators.required],
     nome: ['', Validators.required]
   });
-  formGroupValores = this.formBuilder.group({
+  formGroupAtributos = this.formBuilder.group({
     nome: [null, Validators.required],
     suporteIni: [null, Validators.required],
     suporteFim: [null, Validators.required],
@@ -28,14 +29,26 @@ export class VariaveisComponent {
   displayedColumnsList: string[] = ['id', 'nome'];
   dataSourceList = new MatTableDataSource<any>();
 
-  constructor(public formBuilder: FormBuilder, http: HttpService) {
-    http.route('variavel/').get().subscribe((response) => {
-      console.log(response);
+  variablesRequest: Subscription;
+
+  constructor(public formBuilder: FormBuilder, private http: HttpService) {
+    this.getVariables();
+  }
+
+  ngOnDestroy() {
+    if (this.variablesRequest) {
+      this.variablesRequest.unsubscribe();
+    }
+  }
+
+  getVariables() {
+    this.variablesRequest = this.http.route('variavel/').get().subscribe((response: any[]) => {
+      this.dataSourceList.data = response;
     });
   }
 
   addValue(): void {
-    if (this.formGroupValores.invalid) {
+    if (this.formGroupAtributos.invalid) {
       return;
     }
 
@@ -47,14 +60,39 @@ export class VariaveisComponent {
       }
     });
 
-    const data = this.formGroupValores.getRawValue();
+    const data = this.formGroupAtributos.getRawValue();
     data.id = max + 1;
     this.dataSource.data = [...this.dataSource.data, data];
-    this.formGroupValores.reset();
+    this.formGroupAtributos.reset();
     this.formValores.resetForm();
 
-    Object.keys(this.formGroupValores.controls).forEach(key => {
-      this.formGroupValores.controls[key].setErrors(null);
+    Object.keys(this.formGroupAtributos.controls).forEach(key => {
+      this.formGroupAtributos.controls[key].setErrors(null);
+    });
+  }
+
+  saveVariable() {
+    const formDataVariavel = this.formGroupVariavel.getRawValue();
+    const formDataAtributos = this.dataSource.data.map((data) => {
+      return {
+        fimBase: data.suporteFim,
+        fimNucleo: data.nucleoFim,
+        inicioBase: data.suporteIni,
+        inicioNucleo: data.nucleoIni,
+        nome: data.nome
+      };
+    });
+
+    const data = {
+      nome: formDataVariavel.nome,
+      flObjetivo: formDataVariavel.tipo === 2,
+      atributos: formDataAtributos
+    };
+
+    this.http.route('custom/').post(data).subscribe((response) => {
+      console.log(response);
+    }, (error) => {
+      console.warn(error);
     });
   }
 }
