@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { VariaveisComponent } from './variaveis/variaveis.component';
+import { RegrasComponent } from './regras/regras.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { VariaveisComponent } from './variaveis/variaveis.component';
   ],
   declarations: [
     AppComponent,
-    VariaveisComponent
+    VariaveisComponent,
+    RegrasComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
