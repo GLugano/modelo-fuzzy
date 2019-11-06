@@ -1,5 +1,5 @@
 class Atributo():
-    def __init__(self, nome, inicioBase, fimBase, inicioNucleo, fimNucleo):
+    def __init__(self, nome, inicioBase, fimBase, inicioNucleo, fimNucleo, objetivo):
         self.nome = nome
         self.inicioBase = inicioBase
         self.fimBase = fimBase
@@ -7,38 +7,41 @@ class Atributo():
         self.fimNucleo = fimNucleo
         self.hasLeftShaft = inicioNucleo > inicioBase
         self.hasRightShaft = fimNucleo < fimBase
+        self.isTarget = objetivo
         
     def fuzzify(self, x):
+        if self.isTarget: 
+            return
         if self.hasLeftShaft and self.hasRightShaft:
-            self.innerFunction(x)
+            return self.innerFunction(x)
         elif self.hasLeftShaft:
-            self.leftShaftFunction(x)
+            return self.leftShaftFunction(x)
         elif self.hasRightShaft:
-            self.rightShaftFunction(x)
+            return self.rightShaftFunction(x)
             
     def innerFunction(self ,x):
-        if x < self.inicioBase or x > self.fimBase:
+        if x <= self.inicioBase or x >= self.fimBase:
             return 0
-        elif x >= self.inicioNucleo or x <= self.fimNucleo:
+        elif x >= self.inicioNucleo and x <= self.fimNucleo:
             return 1
         elif x >= self.inicioBase and x <= self.inicioNucleo:
             return (x - self.inicioBase) / (self.inicioNucleo - self.inicioBase)
-        elif x >= self.inicioBase and x <= self.inicioNucleo:
-            return (self.finalBase - x) / (self.fimBase - self.fimNucleo)
+        elif x >= self.fimNucleo and x <= self.fimBase:
+            return (self.fimBase - x) / (self.fimBase - self.fimNucleo)
     
-    def leftShaftFunction(x):
-        if x < self.inicioBase:
+    def leftShaftFunction(self, x):
+        if x <= self.inicioBase:
             return 0
-        elif x >= self.inicioNucleo or x <= self.fimNucleo:
+        elif x >= self.inicioNucleo and x <= self.fimNucleo:
             return 1
         else:
-            return (x - inicioNucleo)/(self.inicioNucleo - self.inicioBase)
+            return (x - self.inicioNucleo)/(self.inicioNucleo - self.inicioBase)
         
-    def rightShaftFunction(x):
-        if x > self.fimBase:
+    def rightShaftFunction(self, x):
+        if x >= self.fimBase:
             return 0
-        elif x >= self.inicioNucleo or x <= self.fimNucleo:
+        elif x >= self.inicioNucleo and x <= self.fimNucleo:
+            print(x <= self.fimNucleo)
             return 1
         else:
-            return (self.fimNucleo - x)/(self.fimNucleo - self.fimBase)
-       
+            return (self.fimBase - x)/(self.fimBase - self.fimNucleo)
