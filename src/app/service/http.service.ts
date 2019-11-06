@@ -3,12 +3,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class HttpService {
-  baseUrl = '';
+  baseUrl = 'http://127.0.0.1:8000';
 
   constructor(private http: HttpClient) { }
 
   route(route: string) {
-    if (route.indexOf('http://') !== -1 && route.indexOf('https://') !== -1) {
+    if (route.indexOf('http://') === -1 && route.indexOf('https://') === -1) {
       route = `${this.baseUrl}/${route}`;
     }
 
@@ -34,8 +34,9 @@ export class HttpService {
           }
         }
 
-        return this.http.get(`${route} ${mappedParams} `, httpOptions);
-      }
+        return this.http.get(`${route}${mappedParams}`, httpOptions);
+      },
+      post: (body: any) => this.http.post(`${route}`, body, httpOptions)
     }
   }
 }

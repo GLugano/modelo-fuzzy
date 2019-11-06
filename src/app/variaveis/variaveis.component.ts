@@ -29,7 +29,7 @@ export class VariaveisComponent {
   dataSourceList = new MatTableDataSource<any>();
 
   constructor(public formBuilder: FormBuilder, http: HttpService) {
-    http.route('https://cors-anywhere.herokuapp.com/https://postman-echo.com/get?test=123').get().subscribe((response) => {
+    http.route('variavel/').get().subscribe((response) => {
       console.log(response);
     });
   }

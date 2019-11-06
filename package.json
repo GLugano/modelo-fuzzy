@@ -8,7 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "servidor": "ng serve --host 0.0.0.0 --disable-host-check"
+    "servidor": "ng serve --host 0.0.0.0 --disable-host-check",
+    "server": "python app/fuzzy-server/manage.py runserver"
   },
   "private": true,
   "dependencies": {
