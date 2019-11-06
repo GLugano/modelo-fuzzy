@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, NgForm, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material';
+import { HttpService } from '../service/http.service';
 
 @Component({
   selector: 'app-variaveis',
@@ -16,15 +17,22 @@ export class VariaveisComponent {
   });
   formGroupValores = this.formBuilder.group({
     nome: [null, Validators.required],
-    baseIni: [null, Validators.required],
-    baseFim: [null, Validators.required],
+    suporteIni: [null, Validators.required],
+    suporteFim: [null, Validators.required],
     nucleoIni: [null, Validators.required],
     nucleoFim: [null, Validators.required]
   });
-  displayedColumns: string[] = ['id', 'valor', 'base', 'nucleo', 'actions'];
+  displayedColumns: string[] = ['id', 'valor', 'suporte', 'nucleo', 'actions'];
   dataSource = new MatTableDataSource<any>();
 
-  constructor(public formBuilder: FormBuilder) {}
+  displayedColumnsList: string[] = ['id', 'nome'];
+  dataSourceList = new MatTableDataSource<any>();
+
+  constructor(public formBuilder: FormBuilder, http: HttpService) {
+    http.route('https://cors-anywhere.herokuapp.com/https://postman-echo.com/get?test=123').get().subscribe((response) => {
+      console.log(response);
+    });
+  }
 
   addValue(): void {
     if (this.formGroupValores.invalid) {

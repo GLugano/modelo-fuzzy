@@ -1,24 +1,15 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import {
-  MatButtonModule,
-  MatFormFieldModule,
-  MatIconModule,
-  MatInputModule,
-  MatSelectModule,
-  MatTableModule,
-  MatTabsModule,
-  MatToolbarModule,
-} from '@angular/material';
+import { MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatTableModule, MatTabsModule, MatToolbarModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { VariaveisComponent } from './variaveis/variaveis.component';
 
+
 @NgModule({
-  declarations: [AppComponent, VariaveisComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -31,9 +22,14 @@ import { VariaveisComponent } from './variaveis/variaveis.component';
     ReactiveFormsModule,
     MatTableModule,
     MatIconModule,
-    MatTabsModule
+    MatTabsModule,
+    HttpClientModule,
+  ],
+  declarations: [
+    AppComponent,
+    VariaveisComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

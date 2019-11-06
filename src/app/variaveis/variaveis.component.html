@@ -4,8 +4,36 @@
     <div class="page-title">Variáveis</div>
     <div class="page-content">
       <mat-tab-group>
-        <mat-tab label="Lista"> Lista </mat-tab>
+        <mat-tab label="Lista">
+          <!-- ABA LISTA -->
+          <div>
+            <table mat-table [dataSource]="dataSourceList" class="mat-elevation-z8">
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef> ID </th>
+                <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="nome">
+                <th mat-header-cell class="flex" *matHeaderCellDef> Nome </th>
+                <td mat-cell class="flex" *matCellDef="let element"> {{element.nome}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell class="actions" *matHeaderCellDef></th>
+                <td mat-cell class="actions" *matCellDef="let element">
+                  <button mat-icon-button>
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsList"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumnsList;"></tr>
+            </table>
+          </div>
+        </mat-tab>
         <mat-tab label="Cadastro">
+          <!-- ABA CADASTRO -->
           <div class="mat-tab-content">
             <form [formGroup]="formGroupVariavel">
               <label>Variável</label>
@@ -14,7 +42,7 @@
                   <mat-label>Tipo</mat-label>
                   <mat-select formControlName="tipo">
                     <mat-option [value]="1">Variável</mat-option>
-                    <mat-option [value]="2">Objeto</mat-option>
+                    <mat-option [value]="2">Objetivo</mat-option>
                   </mat-select>
                 </mat-form-field>
                 <mat-form-field class="flex">
@@ -29,12 +57,12 @@
                   <input matInput placeholder="Nome" formControlName="nome">
                 </mat-form-field>
                 <div class="field-line">
-                  <label>Base</label>
+                  <label>Suporte</label>
                   <mat-form-field class="number">
-                    <input type="number" matInput placeholder="Início" formControlName="baseIni" [min]="0">
+                    <input type="number" matInput placeholder="Início" formControlName="suporteIni" [min]="0">
                   </mat-form-field>
                   <mat-form-field class="number">
-                    <input type="number" matInput placeholder="Fim" formControlName="baseFim" [min]="0">
+                    <input type="number" matInput placeholder="Fim" formControlName="suporteFim" [min]="0">
                   </mat-form-field>
                 </div>
                 <div class="field-line">
@@ -62,9 +90,9 @@
                     <td mat-cell class="flex" *matCellDef="let element"> {{element.nome}} </td>
                   </ng-container>
 
-                  <ng-container matColumnDef="base">
-                    <th mat-header-cell *matHeaderCellDef> Base </th>
-                    <td mat-cell *matCellDef="let element"> {{element.baseIni + '/' + element.baseFim}} </td>
+                  <ng-container matColumnDef="suporte">
+                    <th mat-header-cell *matHeaderCellDef> Suporte </th>
+                    <td mat-cell *matCellDef="let element"> {{element.suporteIni + '/' + element.suporteFim}} </td>
                   </ng-container>
 
                   <ng-container matColumnDef="nucleo">
