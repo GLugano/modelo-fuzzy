@@ -31,6 +31,8 @@ export class VariaveisComponent implements OnDestroy {
 
   variablesRequest: Subscription;
 
+  selectedTab = 0;
+
   constructor(public formBuilder: FormBuilder, private http: HttpService) {
     this.getVariables();
   }
@@ -44,6 +46,7 @@ export class VariaveisComponent implements OnDestroy {
   getVariables() {
     this.variablesRequest = this.http.route('variavel/').get().subscribe((response: any[]) => {
       this.dataSourceList.data = response;
+      this.selectedTab = 0;
     });
   }
 
@@ -90,7 +93,7 @@ export class VariaveisComponent implements OnDestroy {
     };
 
     this.http.route('custom/').post(data).subscribe((response) => {
-      console.log(response);
+      this.getVariables();
     }, (error) => {
       console.warn(error);
     });
