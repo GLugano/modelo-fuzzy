@@ -35,13 +35,14 @@ class Atributo():
         elif x >= self.inicioNucleo and x <= self.fimNucleo:
             return 1
         else:
-            return (x - self.inicioNucleo)/(self.inicioNucleo - self.inicioBase)
+            print((x - self.inicioNucleo))
+            print((self.inicioNucleo - self.inicioBase))
+            return (self.inicioNucleo - x)/(self.inicioNucleo - self.inicioBase)
         
     def rightShaftFunction(self, x):
         if x >= self.fimBase:
             return 0
         elif x >= self.inicioNucleo and x <= self.fimNucleo:
-            print(x <= self.fimNucleo)
             return 1
         else:
             return (self.fimBase - x)/(self.fimBase - self.fimNucleo)
