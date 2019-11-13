@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, NgForm, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material';
-import { HttpService } from '../service/http.service';
+import { HttpService } from '../services/http.service';
 import { Subscription } from 'rxjs';
 
 @Component({
