@@ -1,3 +1,4 @@
+import numpy as np
 class Atributo():
     def __init__(self, nome, inicioBase, fimBase, inicioNucleo, fimNucleo, objetivo):
         self.name = nome
@@ -33,8 +34,6 @@ class Atributo():
         elif x >= self.inicioNucleo and x <= self.fimNucleo:
             return 1
         else:
-            print((x - self.inicioNucleo))
-            print((self.inicioNucleo - self.inicioBase))
             return (self.inicioNucleo - x)/(self.inicioNucleo - self.inicioBase)
         
     def rightShaftFunction(self, x):
@@ -56,6 +55,17 @@ class Variavel():
         for atributo in self.atributos:
             if name.casefold() == atributo.name.casefold():
                 return atributo
+    
+    def getUniverso(self):
+        universo = [None,None]
+        for atrib in self.atributos:
+            if universo[0] == None:
+                universo[0] = atrib.inicioBase
+                universo[1] = atrib.fimBase
+            else:
+                universo[0] = atrib.inicioBase if atrib.inicioBase < universo[0] else universo[0]
+                universo[1] = atrib.fimBase if atrib.fimBase > universo[1] else universo[1]
+        return universo
 
 class Regra():
     #      SE 0  TEMP 1  = 2 ALTA 3  E 4  HUMI 5 = 6 MEDIA 7 ENTAO IRRIGACAO 9 = BAIXA 11
@@ -63,7 +73,7 @@ class Regra():
         self.descricao = descricao.split(' ')
         self.finalResult = 0
     
-class projeto():
+class Projeto():
 
     def __init__(self, variaveis, regras):
         self.variaveis = variaveis
@@ -86,8 +96,16 @@ class projeto():
         for variavel in self.variaveis:
             if name.casefold() == variavel.name.casefold():
                 return variavel
+            
+    def getObjectiveVariable(self):
+        for variavel in self.variaveis:
+            if variavel.isObjective:
+                return variavel
 
     def ativacaoDosAntecedentes(self):
+        self.ruleSetValues = {}
+        universo = self.getObjectiveVariable().getUniverso()
+        alvos = []
         for regra in self.regras:
             var1 = self.getVariavleByName(regra.descricao[1])
             atrib1 = var1.getAtributeByName(regra.descricao[3]) 
@@ -95,16 +113,39 @@ class projeto():
             var2 = self.getVariavleByName(regra.descricao[5])
             atrib2 = var2.getAtributeByName(regra.descricao[7])
             varObjet = self.getVariavleByName(regra.descricao[9])
-            atribObjet = regra.descricao[11]
-
+            atribObjet = varObjet.getAtributeByName(regra.descricao[11])
             if operator.casefold() == 'E'.casefold():
                 result = min([atrib1.pertinencia, atrib2.pertinencia])
-                if self.ruleSetValues.get(atribObjet) == None:
-                    self.ruleSetValues[atribObjet] = [result]
-                else:
-                    self.ruleSetValues[atribObjet].append(result)
+            else:
+                result = max([atrib1.pertinencia, atrib2.pertinencia])
+            if self.ruleSetValues.get(atribObjet.name) == None:
+                self.ruleSetValues[atribObjet.name] = [result]
+                alvos.append(atribObjet)
+            else:
+                self.ruleSetValues[atribObjet.name].append(result)
             
-            for key in self.ruleSetValues:
-                self.ruleSetValues[key] = max(self.ruleSetValues[key])
-                if self.ruleSetValues[key] == 0:
-                    self.ruleSetValues.pop(key, None)
+        for key in self.ruleSetValues:
+            print(self.ruleSetValues)
+            self.ruleSetValues[key] = max(self.ruleSetValues[key])
+            if self.ruleSetValues[key] == 0:
+                self.ruleSetValues.pop(key, None)  
+            print(self.ruleSetValues)
+        
+        values = list(self.ruleSetValues.values())
+        dividendo = []
+        divisor = []
+        for i,value in enumerate(values):
+            dividendo.append([])
+            antAscendente = i > 0 and value > values[i-1]
+            posAscendente = (len(values) - 1 >= i + 1  and value < values[i+1])
+            
+            arrayUniverso = np.arange(universo[0],universo[1]+1)
+            
+            for j in arrayUniverso:
+                if (j >= alvos[i].inicioNucleo and j <= alvos[i].fimNucleo) or (j >= alvos[i].inicioBase and j <= alvos[i].fimBase and (antAscendente or posAscendente)):
+                    dividendo[i].append(j*value)
+                    
+            divisor.append(value * len(dividendo[i]))
+            dividendo[i] = np.sum(dividendo[i])
+        
+        print(np.sum(dividendo)/np.sum(divisor))
