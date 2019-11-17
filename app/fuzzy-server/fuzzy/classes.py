@@ -1,5 +1,6 @@
 import numpy as np
-class Atributo():
+import jsons
+class Atributo(jsons.JsonSerializable):
     def __init__(self, nome, inicioBase, fimBase, inicioNucleo, fimNucleo, objetivo):
         self.name = nome
         self.inicioBase = inicioBase
@@ -9,6 +10,9 @@ class Atributo():
         self.hasLeftShaft = inicioNucleo > inicioBase
         self.hasRightShaft = fimNucleo < fimBase
         self.pertinencia = 0
+
+    def __repr__(self):
+        return f'{self.name} {self.inicioBase}  {self.fimBase} {self.inicioNucleo}  {self.fimNucleo}'
         
     def calculaPertinencia(self, x):
         if self.hasLeftShaft and self.hasRightShaft:
@@ -44,12 +48,22 @@ class Atributo():
         else:
             return (self.fimBase - x)/(self.fimBase - self.fimNucleo)
 
-class Variavel():
-    def __init__(self, nome, atributos, inputValue, isObjective):
+class Variavel(jsons.JsonSerializable):
+    def __init__(self, nome, atributos, inputValue, flObjetivo):
         self.name = nome
-        self.atributos = atributos
+        self.atributos = self.atributosDictToAtributos(atributos)
         self.inputValue = inputValue
-        self.isObjective = isObjective
+        self.isObjective = flObjetivo
+    
+    def __repr__(self):
+        return f' NOME {self.name} INPUT :{self.inputValue} Atributos: {self.atributos}'
+
+    def atributosDictToAtributos(self, atributos):
+        atrib = []
+        for atributo in atributos:
+            atrib.append(jsons.loads(jsons.dumps(atributo),Atributo))
+        return atrib
+        
     
     def getAtributeByName(self, name):
         for atributo in self.atributos:
@@ -83,7 +97,7 @@ class Projeto():
 
     def fuzzify(self):
         self.calculaPertinencias()
-        self.ativacaoDosAntecedentes()
+        return self.ativacaoDosAntecedentes()
 
     def calculaPertinencias(self):
         for variavel in self.variaveis:
@@ -100,6 +114,7 @@ class Projeto():
     def getObjectiveVariable(self):
         for variavel in self.variaveis:
             if variavel.isObjective:
+                print('objetivo')
                 return variavel
 
     def ativacaoDosAntecedentes(self):
@@ -116,20 +131,19 @@ class Projeto():
             atribObjet = varObjet.getAtributeByName(regra.descricao[11])
             if operator.casefold() == 'E'.casefold():
                 result = min([atrib1.pertinencia, atrib2.pertinencia])
+                print(result)
             else:
                 result = max([atrib1.pertinencia, atrib2.pertinencia])
             if self.ruleSetValues.get(atribObjet.name) == None:
                 self.ruleSetValues[atribObjet.name] = [result]
                 alvos.append(atribObjet)
+                print('alvos',alvos)
             else:
                 self.ruleSetValues[atribObjet.name].append(result)
-            
+        
+        print('ruleSet',self.ruleSetValues)
         for key in self.ruleSetValues:
-            print(self.ruleSetValues)
             self.ruleSetValues[key] = max(self.ruleSetValues[key])
-            if self.ruleSetValues[key] == 0:
-                self.ruleSetValues.pop(key, None)  
-            print(self.ruleSetValues)
         
         values = list(self.ruleSetValues.values())
         dividendo = []
@@ -147,5 +161,6 @@ class Projeto():
                     
             divisor.append(value * len(dividendo[i]))
             dividendo[i] = np.sum(dividendo[i])
-        
-        print(np.sum(dividendo)/np.sum(divisor))
+        print('divisor :',divisor)
+        print('Dividendo: ',dividendo)
+        return (np.sum(dividendo)/np.sum(divisor))

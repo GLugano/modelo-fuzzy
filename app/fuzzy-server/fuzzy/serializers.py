@@ -9,7 +9,7 @@ class AtributoSerializer(serializers.ModelSerializer):
         read_only_fields  = ['variavel']
    
 class VariavelSerializer(serializers.ModelSerializer):
-    atributos =  AtributoSerializer(many=True)
+    atributos = AtributoSerializer(many=True)
     class Meta:
         model = Variavel
         fields = '__all__'

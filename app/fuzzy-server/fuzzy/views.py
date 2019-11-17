@@ -1,9 +1,14 @@
+from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.renderers import JSONRenderer
 from django.shortcuts import render
+from django.core import serializers
 from .serializers import AtributoSerializer, VariavelSerializer, RegraSerializer
 from .models import Variavel, Atributo, Regra
 from rest_framework import viewsets
 from rest_framework.response import Response
+from .classes import Regra as Rg ,Atributo as Atr ,Variavel as Var ,Projeto
+import jsons
 
 # Create your views here.
 
@@ -37,3 +42,25 @@ class VariavelCustomViewSet(viewsets.ViewSet):
             Atributo.objects.create(variavel=obj, **atributo)
 
         return Response(data.data)
+
+@api_view(['GET'])
+def simulateFuzzy(request):
+    if request.method == 'GET':
+        variaveis = Variavel.objects.all()
+        variaveis = list(variaveis.values())
+        req = jsons.load(request.data)
+        print(req)
+        for i,variavel in enumerate(variaveis):
+           atributos = Atributo.objects.filter(variavel_id = variavel['id'])
+           variavel['atributos'] = list(atributos.values())
+           variavel['inputValue'] = req[variavel['nome']] if variavel['flObjetivo'] == False else 0
+           variaveis[i] = jsons.loads(jsons.dumps(variavel),Var)
+
+        regras = list(Regra.objects.all().values())
+        for i, regra in enumerate(regras):
+            regras[i] = jsons.loads(jsons.dumps(regra),Rg)
+
+        projeto = Projeto(variaveis, regras)
+        result = projeto.fuzzify()        
+        
+        return Response(result)
