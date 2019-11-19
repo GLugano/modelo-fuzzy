@@ -92,7 +92,6 @@ class Variavel(jsons.JsonSerializable):
         for atributo in self.atributos:
             yPositions = []
             legenda.append(atributo.name)
-            print(atributo)
             if atributo.hasLeftShaft and atributo.hasRightShaft:
                 yPositions = [0,1,1,0]
             elif atributo.hasLeftShaft and not atributo.hasRightShaft:
@@ -101,6 +100,7 @@ class Variavel(jsons.JsonSerializable):
                 yPositions = [1,1,1,0]
             plt.plot([atributo.inicioBase,atributo.inicioNucleo,atributo.fimNucleo,atributo.fimBase],yPositions)
         plt.legend(legenda, loc='lower left')
+        plt.title(self.name, loc='center')
         bytes_image = io.BytesIO()
         plt.savefig(bytes_image, format='PNG')
         return bytes_image
