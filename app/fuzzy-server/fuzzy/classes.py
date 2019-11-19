@@ -138,7 +138,6 @@ class Projeto():
     def getObjectiveVariable(self):
         for variavel in self.variaveis:
             if variavel.isObjective:
-                print('objetivo')
                 return variavel
 
     def ativacaoDosAntecedentes(self):
@@ -155,36 +154,29 @@ class Projeto():
             atribObjet = varObjet.getAtributeByName(regra.descricao[11])
             if operator.casefold() == 'E'.casefold():
                 result = min([atrib1.pertinencia, atrib2.pertinencia])
-                print(result)
             else:
                 result = max([atrib1.pertinencia, atrib2.pertinencia])
             if self.ruleSetValues.get(atribObjet.name) == None:
                 self.ruleSetValues[atribObjet.name] = [result]
                 alvos.append(atribObjet)
-                print('alvos',alvos)
             else:
                 self.ruleSetValues[atribObjet.name].append(result)
         
-        print('ruleSet',self.ruleSetValues)
         for key in self.ruleSetValues:
             self.ruleSetValues[key] = max(self.ruleSetValues[key])
         
         values = list(self.ruleSetValues.values())
         dividendo = []
         divisor = []
+        valores = []
         for i,value in enumerate(values):
             dividendo.append([])
+            arrayUniverso = np.arange(universo[0],universo[1]+1)
             antAscendente = i > 0 and value > values[i-1]
             posAscendente = (len(values) - 1 >= i + 1  and value < values[i+1])
-            
-            arrayUniverso = np.arange(universo[0],universo[1]+1)
-            
             for j in arrayUniverso:
-                if (j >= alvos[i].inicioNucleo and j <= alvos[i].fimNucleo) or (j >= alvos[i].inicioBase and j <= alvos[i].fimBase and (antAscendente or posAscendente)):
+                if (j >= alvos[i].inicioNucleo and j <= alvos[i].fimNucleo) or (j >= alvos[i].inicioBase and j <= alvos[i].fimBase and (antAscendente or not posAscendente)):
                     dividendo[i].append(j*value)
-                    
             divisor.append(value * len(dividendo[i]))
             dividendo[i] = np.sum(dividendo[i])
-        print('divisor :',divisor)
-        print('Dividendo: ',dividendo)
         return (np.sum(dividendo)/np.sum(divisor))
