@@ -3,13 +3,15 @@ from rest_framework.decorators import api_view
 from rest_framework.renderers import JSONRenderer
 from django.shortcuts import render
 from django.core import serializers
+from django.http import HttpResponse
 from .serializers import AtributoSerializer, VariavelSerializer, RegraSerializer
 from .models import Variavel, Atributo, Regra
 from rest_framework import viewsets
 from rest_framework.response import Response
 from .classes import Regra as Rg ,Atributo as Atr ,Variavel as Var ,Projeto
 import jsons
-
+import numpy as np
+from PIL import Image
 # Create your views here.
 
 
@@ -64,3 +66,12 @@ def simulateFuzzy(request):
         result = projeto.fuzzify()        
         
         return Response(result)
+
+@api_view(['GET'])
+def plotVariable(request):
+    variavel = jsons.loads(jsons.dumps(request.data), Var)
+    img = variavel.plot()
+    img = Image.open(img)
+    resp = HttpResponse(content_type='image/png')
+    img.save(resp,'png')
+    return resp

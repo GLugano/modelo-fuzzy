@@ -1,5 +1,9 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import jsons
+import io
+from PIL import Image
+
 class Atributo(jsons.JsonSerializable):
     def __init__(self, nome, inicioBase, fimBase, inicioNucleo, fimNucleo, objetivo):
         self.name = nome
@@ -48,6 +52,8 @@ class Atributo(jsons.JsonSerializable):
         else:
             return (self.fimBase - x)/(self.fimBase - self.fimNucleo)
 
+
+
 class Variavel(jsons.JsonSerializable):
     def __init__(self, nome, atributos, inputValue, flObjetivo):
         self.name = nome
@@ -80,7 +86,25 @@ class Variavel(jsons.JsonSerializable):
                 universo[0] = atrib.inicioBase if atrib.inicioBase < universo[0] else universo[0]
                 universo[1] = atrib.fimBase if atrib.fimBase > universo[1] else universo[1]
         return universo
-
+    
+    def plot(self):
+        legenda = []
+        for atributo in self.atributos:
+            yPositions = []
+            legenda.append(atributo.name)
+            print(atributo)
+            if atributo.hasLeftShaft and atributo.hasRightShaft:
+                yPositions = [0,1,1,0]
+            elif atributo.hasLeftShaft and not atributo.hasRightShaft:
+                yPositions = [0,1,1,1]
+            elif not atributo.hasLeftShaft and atributo.hasRightShaft:
+                yPositions = [1,1,1,0]
+            plt.plot([atributo.inicioBase,atributo.inicioNucleo,atributo.fimNucleo,atributo.fimBase],yPositions)
+        plt.legend(legenda, loc='lower left')
+        bytes_image = io.BytesIO()
+        plt.savefig(bytes_image, format='PNG')
+        return bytes_image
+    
 class Regra():
     #      SE 0  TEMP 1  = 2 ALTA 3  E 4  HUMI 5 = 6 MEDIA 7 ENTAO IRRIGACAO 9 = BAIXA 11
     def __init__(self, descricao):

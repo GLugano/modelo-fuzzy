@@ -9,5 +9,6 @@ router.register('regra', views.RegraViewSet)
 router.register('custom', views.VariavelCustomViewSet)
 urlpatterns = [
     path('', include(router.urls)),
-    path('simular', views.simulateFuzzy)
+    path('simular', views.simulateFuzzy),
+    path('plot', views.plotVariable)
 ]
