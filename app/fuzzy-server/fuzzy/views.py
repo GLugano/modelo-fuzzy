@@ -12,6 +12,7 @@ from .classes import Regra as Rg ,Atributo as Atr ,Variavel as Var ,Projeto
 import jsons
 import numpy as np
 from PIL import Image
+import base64
 # Create your views here.
 
 
@@ -75,3 +76,20 @@ def plotVariable(request):
     resp = HttpResponse(content_type='image/png')
     img.save(resp,'png')
     return resp
+
+@api_view(['GET'])
+def getAllGraphics(request):
+    variaveis = Variavel.objects.all()
+    variaveis = list(variaveis.values())
+    imgList = []
+    for i,variavel in enumerate(variaveis):
+        atributos = Atributo.objects.filter(variavel_id = variavel['id'])
+        variavel['atributos'] = list(atributos.values())
+        variaveis[i] = jsons.loads(jsons.dumps(variavel),Var)
+        img = variaveis[i].plot()
+        imgList.append(base64.b64encode(img.getvalue()))
+    return Response(imgList)
+
+
+
+

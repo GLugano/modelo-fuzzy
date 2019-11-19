@@ -10,5 +10,6 @@ router.register('custom', views.VariavelCustomViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('simular', views.simulateFuzzy),
-    path('plot', views.plotVariable)
+    path('plot', views.plotVariable),
+    path('graficos', views.getAllGraphics)
 ]
