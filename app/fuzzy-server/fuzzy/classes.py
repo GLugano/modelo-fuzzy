@@ -168,7 +168,6 @@ class Projeto():
         values = list(self.ruleSetValues.values())
         dividendo = []
         divisor = []
-        valores = []
         for i,value in enumerate(values):
             dividendo.append([])
             arrayUniverso = np.arange(universo[0],universo[1]+1)
@@ -179,4 +178,5 @@ class Projeto():
                     dividendo[i].append(j*value)
             divisor.append(value * len(dividendo[i]))
             dividendo[i] = np.sum(dividendo[i])
-        return (np.sum(dividendo)/np.sum(divisor))
+            sumDivisor = np.sum(divisor)
+        return np.sum(dividendo)/sumDivisor if sumDivisor != 0 else 0
