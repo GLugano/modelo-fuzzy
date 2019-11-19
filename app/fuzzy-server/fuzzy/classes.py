@@ -103,6 +103,7 @@ class Variavel(jsons.JsonSerializable):
         plt.title(self.name, loc='center')
         bytes_image = io.BytesIO()
         plt.savefig(bytes_image, format='PNG')
+        plt.clf()
         return bytes_image
     
 class Regra():
@@ -110,6 +111,9 @@ class Regra():
     def __init__(self, descricao):
         self.descricao = descricao.split(' ')
         self.finalResult = 0
+
+    def __repr__(self):
+        return str(self.descricao)
     
 class Projeto():
 
@@ -145,6 +149,7 @@ class Projeto():
         universo = self.getObjectiveVariable().getUniverso()
         alvos = []
         for regra in self.regras:
+            print(regra)
             var1 = self.getVariavleByName(regra.descricao[1])
             atrib1 = var1.getAtributeByName(regra.descricao[3]) 
             operator = regra.descricao[4]
@@ -168,6 +173,7 @@ class Projeto():
         values = list(self.ruleSetValues.values())
         dividendo = []
         divisor = []
+        print(values)
         for i,value in enumerate(values):
             dividendo.append([])
             arrayUniverso = np.arange(universo[0],universo[1]+1)
@@ -178,5 +184,5 @@ class Projeto():
                     dividendo[i].append(j*value)
             divisor.append(value * len(dividendo[i]))
             dividendo[i] = np.sum(dividendo[i])
-            sumDivisor = np.sum(divisor)
+        sumDivisor = np.sum(divisor)
         return np.sum(dividendo)/sumDivisor if sumDivisor != 0 else 0

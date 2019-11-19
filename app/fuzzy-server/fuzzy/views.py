@@ -46,9 +46,9 @@ class VariavelCustomViewSet(viewsets.ViewSet):
 
         return Response(data.data)
 
-@api_view(['GET'])
+@api_view(['POST'])
 def simulateFuzzy(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         variaveis = Variavel.objects.all()
         variaveis = list(variaveis.values())
         req = jsons.load(request.data)
