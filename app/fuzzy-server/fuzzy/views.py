@@ -65,13 +65,12 @@ def simulateFuzzy(request):
 
         projeto = Projeto(variaveis, regras)
         result = projeto.fuzzify()        
-        
         return Response(result)
 
 @api_view(['GET'])
 def plotVariable(request):
     variavel = jsons.loads(jsons.dumps(request.data), Var)
-    img = variavel.plot()
+    img = variavel.plot(True)
     img = Image.open(img)
     resp = HttpResponse(content_type='image/png')
     img.save(resp,'png')
@@ -86,7 +85,7 @@ def getAllGraphics(request):
         atributos = Atributo.objects.filter(variavel_id = variavel['id'])
         variavel['atributos'] = list(atributos.values())
         variaveis[i] = jsons.loads(jsons.dumps(variavel),Var)
-        img = variaveis[i].plot()
+        img = variaveis[i].plot(True)
         imgList.append(base64.b64encode(img.getvalue()))
     return Response(imgList)
 

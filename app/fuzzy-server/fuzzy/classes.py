@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import jsons
 import io
+import base64
 from PIL import Image
 
 class Atributo(jsons.JsonSerializable):
@@ -87,7 +88,7 @@ class Variavel(jsons.JsonSerializable):
                 universo[1] = atrib.fimBase if atrib.fimBase > universo[1] else universo[1]
         return universo
     
-    def plot(self):
+    def plot(self, doClear):
         legenda = []
         for atributo in self.atributos:
             yPositions = []
@@ -103,7 +104,8 @@ class Variavel(jsons.JsonSerializable):
         plt.title(self.name, loc='center')
         bytes_image = io.BytesIO()
         plt.savefig(bytes_image, format='PNG')
-        plt.clf()
+        if (doClear):
+            plt.clf()
         return bytes_image
     
 class Regra():
@@ -148,6 +150,7 @@ class Projeto():
         self.ruleSetValues = {}
         universo = self.getObjectiveVariable().getUniverso()
         alvos = []
+        objetivo = None
         for regra in self.regras:
             print(regra)
             var1 = self.getVariavleByName(regra.descricao[1])
@@ -156,6 +159,7 @@ class Projeto():
             var2 = self.getVariavleByName(regra.descricao[5])
             atrib2 = var2.getAtributeByName(regra.descricao[7])
             varObjet = self.getVariavleByName(regra.descricao[9])
+            objetivo = varObjet
             atribObjet = varObjet.getAtributeByName(regra.descricao[11])
             if operator.casefold() == 'E'.casefold():
                 result = min([atrib1.pertinencia, atrib2.pertinencia])
@@ -172,9 +176,12 @@ class Projeto():
         
         values = list(self.ruleSetValues.values())
         dividendo = []
+        x = []
+        y = []
         divisor = []
         print(values)
         for i,value in enumerate(values):
+            
             dividendo.append([])
             arrayUniverso = np.arange(universo[0],universo[1]+1)
             antAscendente = i > 0 and value > values[i-1]
@@ -182,7 +189,17 @@ class Projeto():
             for j in arrayUniverso:
                 if (j >= alvos[i].inicioNucleo and j <= alvos[i].fimNucleo) or (j >= alvos[i].inicioBase and j <= alvos[i].fimBase and (antAscendente or not posAscendente)):
                     dividendo[i].append(j*value)
+                    x.append(j)
+                    y.append(value)
             divisor.append(value * len(dividendo[i]))
             dividendo[i] = np.sum(dividendo[i])
         sumDivisor = np.sum(divisor)
-        return np.sum(dividendo)/sumDivisor if sumDivisor != 0 else 0
+        objetivo.plot(False)
+        plt.fill_between(x,0,y[1])
+        bytes_image = io.BytesIO()
+        plt.savefig(bytes_image, format='PNG')
+        plt.clf()
+        result = {}
+        result['valor'] = np.sum(dividendo)/sumDivisor if sumDivisor != 0 else 0
+        result['imagem'] = base64.b64encode(bytes_image.getvalue())
+        return result
