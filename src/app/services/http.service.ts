@@ -34,7 +34,8 @@ export class HttpService {
 
         return this.http.get(`${route}${mappedParams}`, httpOptions);
       },
-      post: (body: any) => this.http.post(`${route}`, body, httpOptions)
+      post: (body: any) => this.http.post(`${route}`, body, httpOptions),
+      delete: (id: any) => this.http.delete(`${route}/${id}`, httpOptions)
     }
   }
 }

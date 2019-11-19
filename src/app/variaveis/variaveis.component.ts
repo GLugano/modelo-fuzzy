@@ -26,8 +26,10 @@ export class VariaveisComponent implements OnDestroy {
   displayedColumns: string[] = ['id', 'valor', 'suporte', 'nucleo', 'actions'];
   dataSource = new MatTableDataSource<any>();
 
-  displayedColumnsList: string[] = ['id', 'nome'];
+  displayedColumnsList: string[] = ['id', 'nome', 'actions'];
   dataSourceList = new MatTableDataSource<any>();
+
+  charts: string[];
 
   variablesRequest: Subscription;
 
@@ -35,6 +37,7 @@ export class VariaveisComponent implements OnDestroy {
 
   constructor(public formBuilder: FormBuilder, private http: HttpService) {
     this.getVariables();
+    this.getCharts();
   }
 
   ngOnDestroy() {
@@ -93,7 +96,32 @@ export class VariaveisComponent implements OnDestroy {
     };
 
     this.http.route('custom/').post(data).subscribe((response) => {
+      this.dataSource.data = [];
+      this.formGroupVariavel.reset();
+      this.formGroupAtributos.reset();
       this.getVariables();
+      this.getCharts();
+    }, (error) => {
+      console.warn(error);
+    });
+  }
+
+  remove(id: number) {
+    this.http.route('variavel').delete(id).subscribe((response) => {
+      this.getVariables();
+      this.getCharts();
+    }, (error) => {
+      console.warn(error);
+    });
+  }
+
+  removeValue(element: any) {
+    this.dataSource.data = this.dataSource.data.filter((el: any) => el.nome !== el.nome);
+  }
+
+  getCharts() {
+    this.http.route('graficos').get().subscribe((response: string[]) => {
+      this.charts = response.map((chart) => `data:image/png;base64,${chart}`);
     }, (error) => {
       console.warn(error);
     });

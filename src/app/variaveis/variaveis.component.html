@@ -21,7 +21,7 @@
               <ng-container matColumnDef="actions">
                 <th mat-header-cell class="actions" *matHeaderCellDef></th>
                 <td mat-cell class="actions" *matCellDef="let element">
-                  <button mat-icon-button>
+                  <button mat-icon-button (click)="remove(element.id)">
                     <mat-icon>close</mat-icon>
                   </button>
                 </td>
@@ -107,7 +107,7 @@
                   <ng-container matColumnDef="actions">
                     <th mat-header-cell class="actions" *matHeaderCellDef></th>
                     <td mat-cell class="actions" *matCellDef="let element">
-                      <button mat-icon-button>
+                      <button mat-icon-button (click)="removeValue(element)">
                         <mat-icon>close</mat-icon>
                       </button>
                     </td>
@@ -118,6 +118,11 @@
                 </table>
               </div>
             </form>
+          </div>
+        </mat-tab>
+        <mat-tab label="Gráficos">
+          <div *ngFor="let chart of charts">
+            <img [src]="chart">
           </div>
         </mat-tab>
       </mat-tab-group>
