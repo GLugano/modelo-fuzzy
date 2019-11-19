@@ -21,9 +21,11 @@
               <ng-container matColumnDef="actions">
                 <th mat-header-cell class="actions" *matHeaderCellDef></th>
                 <td mat-cell class="actions" *matCellDef="let element">
-                  <button mat-icon-button (click)="remove(element.id)">
-                    <mat-icon>close</mat-icon>
-                  </button>
+                  <div class="flex-container">
+                    <button mat-icon-button (click)="remove(element.id)">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
                 </td>
               </ng-container>
 
@@ -39,7 +41,7 @@
               <div class="flex-container">
                 <label>Variável</label>
                 <div class="flex"></div>
-                <button mat-stroked-button (click)="saveVariable()">Salvar</button>
+                <button mat-stroked-button (click)="save()">Salvar</button>
               </div>
               <div class="field-line">
                 <mat-form-field>

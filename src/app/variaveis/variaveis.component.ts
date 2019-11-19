@@ -2,7 +2,7 @@ import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, NgForm, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material';
 import { HttpService } from '../services/http.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable, zip } from 'rxjs';
 
 @Component({
   selector: 'app-variaveis',
@@ -13,6 +13,7 @@ export class VariaveisComponent implements OnDestroy {
   @ViewChild('f', { static: true }) formValores: NgForm;
 
   formGroupVariavel = this.formBuilder.group({
+    id: [null],
     tipo: [1, Validators.required],
     nome: ['', Validators.required]
   });
@@ -77,25 +78,46 @@ export class VariaveisComponent implements OnDestroy {
     });
   }
 
-  saveVariable() {
+  save() {
     const formDataVariavel = this.formGroupVariavel.getRawValue();
-    const formDataAtributos = this.dataSource.data.map((data) => {
-      return {
+    let formDataAtributos: any[] = this.dataSource.data.map((data) => {
+      let returnObj: any = {
         fimBase: data.suporteFim,
         fimNucleo: data.nucleoFim,
         inicioBase: data.suporteIni,
         inicioNucleo: data.nucleoIni,
         nome: data.nome
       };
+
+      if (data.id) {
+        returnObj.id = data.id;
+      }
+
+      return returnObj;
     });
 
-    const data = {
+    const data: any = {
       nome: formDataVariavel.nome,
       flObjetivo: formDataVariavel.tipo === 2,
       atributos: formDataAtributos
     };
 
-    this.http.route('custom/').post(data).subscribe((response) => {
+    let obs: Observable<any>;
+
+    if (formDataVariavel.id) {
+      data.id = formDataVariavel.id;
+      obs = this.http.route('cadastro').put(data.id, data);
+    } else {
+      obs = zip(
+        this.http.route('atributo').post(formDataAtributos),
+        this.http.route('variavel').post({
+          nome: formDataVariavel.nome,
+          flObjetivo: formDataVariavel.tipo === 2,
+        }),
+      );
+    }
+
+    obs.subscribe(() => {
       this.dataSource.data = [];
       this.formGroupVariavel.reset();
       this.formGroupAtributos.reset();
@@ -104,6 +126,23 @@ export class VariaveisComponent implements OnDestroy {
     }, (error) => {
       console.warn(error);
     });
+  }
+
+  edit(element: any) {
+    this.formGroupVariavel.get('id').setValue(element.id);
+    this.formGroupVariavel.get('nome').setValue(element.nome);
+    this.formGroupVariavel.get('tipo').setValue(element.flObjetivo ? 2 : 1);
+
+    this.dataSource.data = element.atributos.map((el) => ({
+      suporteFim: el.fimBase,
+      nucleoFim: el.fimNucleo,
+      suporteIni: el.inicioBase,
+      nucleoIni: el.inicioNucleo,
+      nome: el.nome,
+      id: el.id,
+    }));
+
+    this.selectedTab = 1;
   }
 
   remove(id: number) {

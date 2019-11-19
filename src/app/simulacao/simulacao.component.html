@@ -1,0 +1,28 @@
+<div class="page-wrapper flex-container">
+  <div class="flex"></div>
+  <div class="page">
+    <div class="page-title" (click)="selectedTab = 0">Regras</div>
+    <div class="page-content">
+      <mat-tab-group [(selectedIndex)]="selectedTab">
+        <mat-tab label="Valores">
+          <div class="mat-tab-content">
+            <div class="flex-container">
+              <label>Variáveis</label>
+              <div class="flex"></div>
+              <button mat-stroked-button (click)="simulate()">Simular</button>
+            </div>
+            <div *ngFor="let variable of variables; trackBy: trackByItems; let index = index">
+              <mat-form-field class="flex" *ngIf="!variable.flObjetivo">
+                <input matInput [placeholder]="variable.nome" [(ngModel)]="values[index]">
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Resultado">
+
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+  <div class="flex"></div>
+</div>
