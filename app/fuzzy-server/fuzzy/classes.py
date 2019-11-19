@@ -111,6 +111,9 @@ class Regra():
     def __init__(self, descricao):
         self.descricao = descricao.split(' ')
         self.finalResult = 0
+
+    def __repr__(self):
+        return str(self.descricao)
     
 class Projeto():
 
